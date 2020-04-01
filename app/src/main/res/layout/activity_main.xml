@@ -84,6 +84,8 @@
         android:layout_below="@+id/submitButton"
         android:orientation="horizontal"
         tools:context="com.spirograph.MainActivity"></LinearLayout>
+
+
 </LinearLayout>
 
 
