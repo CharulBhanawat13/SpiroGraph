@@ -1,7 +1,6 @@
 package com.spirograph;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.spirograph.shapes.Line;
 
@@ -86,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+       final TinyDB tinyDB=new TinyDB(getApplicationContext());
+
         switch (id){
             case R.id.invite_friend:  try {
                 Intent sendIntent = new Intent(Intent.ACTION_SEND);
@@ -103,17 +103,29 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"Under Development!!!",Toast.LENGTH_LONG).show();
                 break;
             case R.id.star:
-                Toast.makeText(getApplicationContext(),"Star clicked",Toast.LENGTH_LONG).show();
                 starClicked = !starClicked;
-                if (starClicked)
-                item.setIcon(R.drawable.ic_star_full_white);
+                if (starClicked) {
+                    item.setIcon(R.drawable.ic_star_full_white);
+                    try {
+                        tinyDB.putListInt("lengths", (ArrayList<Integer>) lengthsEditText.getLengths());
+                        tinyDB.putListInt("intAngleIncrements", (ArrayList<Integer>) angleIncrementsEditTexts.getLengths());
+                    }catch (NumberFormatException ex) {
+                        Snackbar
+                                .make(
+                                        linearLayout,
+                                        "Enter valid numbers",
+                                        Snackbar.LENGTH_LONG
+                                ).show();
+                    }
+                }
                 else
                     item.setIcon(R.drawable.ic_star_white);
-
-                List<Integer> lengths=lengthsEditText.getLengths();
-                List<Integer> intAngleIncrements = angleIncrementsEditTexts.getLengths();
-
                 break;
+
+            case R.id.showstarred:
+                Intent intent=new Intent(this,Main2Activity.class);
+                startActivity(intent);
+
         }
         return super.onOptionsItemSelected(item);
     }
